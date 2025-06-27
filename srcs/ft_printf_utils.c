@@ -16,36 +16,50 @@ int	print_string(char *s)
 int	print_int(int n)
 {
 	long	num;
-	int	count;
+	char	c;
+	int		count;
 
-	num = n;
 	count = 0;
+	num = n;
 	if (num < 0)
 	{
-		write(1, "-", 1);
-		count++;
+		count += write(1, "-", 1);
 		num = -num;
 	}
-	while (num >= 10)
-	{
-		print_int(num / 10);
-		count++;
-	}
-	ft_putchar_fd(num / 10 + '0', 1);
-	count++;
+	if (num >= 10)
+		count += print_int(num / 10);
+	c = (num % 10) + '0';
+	count += write(1, &c, 1);
 	return (count);
 }
 
 int	print_unsigned(unsigned int n)
 {
-	long	num;
+	char	c;
+	int		count;
 
-	num = n;
-	while (num >= 10)
-	{
-	}
+	count = 0;
+	if (n >= 10)
+		count += print_unsigned(n / 10);
+	c = (n % 10) + '0';
+	count += write(1, &c, 1);
+	return (count);
 }
 
 int	print_hex(unsigned int n, int uppercase)
 {
+	char	*base;
+	char	c;
+	int		count;
+
+	count = 0;
+	if (uppercase)
+		base = "0123456789ABCDEF";
+	else
+		base = "0123456789abcdef";
+	if (n >= 16)
+		count += print_hex(n / 16, uppercase);
+	c = base[n % 16];
+	count += write(1, &c, 1);
+	return (count);
 }
