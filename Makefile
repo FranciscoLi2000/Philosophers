@@ -1,41 +1,30 @@
 # ========= CONFIG ============
-NAME		= pipex
+NAME		= philosophers
 
 CC		= cc
-CFLAGS		= -Wall -Wextra -Werror
-INCDIRS		= -Iincludes -Ilibft
+CFLAGS		= -Wall -Wextra -Werror -pthread
 
-SRCDIR		= srcs
-OBJDIR		= objs
-LIBFTDIR	= libft
-LIBFT		= $(LIBFTDIR)/libft.a
+SRCS		= ft_putchar_fd.c ft_putstr_fd.c main.c clean_all.c \
+		ft_putnbr_fd.c ft_atoi.c init.c monitor.c routine.c
 
-SRC		= $(wildcard $(SRCDIR)/*.c)
-OBJ		= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+OBJS		= $(SRCS:.c=.o)
+
+INCLUDES	= philosophers.h
 
 # ========= RULES =============
 all: $(NAME)
 
-# pipex 的最终链接目标
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(INCDIRS) $(OBJ) $(LIBFT) -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-# 自动生成 .o 文件到 objs 目录
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) $(INCDIRS) -c $< -o $@
-
-# 编译 libft
-$(LIBFT):
-	$(MAKE) -C $(LIBFTDIR)
+%.o: %.c $(INCLUDES)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # ========= CLEANING ==========
 clean:
-	$(MAKE) clean -C $(LIBFTDIR)
-	rm -rf $(OBJDIR)
+	rm -rf $(OBJS)
 
 fclean: clean
-	$(MAKE) fclean -C $(LIBFTDIR)
 	rm -f $(NAME)
 
 re: fclean all
