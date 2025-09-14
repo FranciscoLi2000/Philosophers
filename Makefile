@@ -1,37 +1,36 @@
-# ========= CONFIG ============
 NAME		= philosophers
 
+SRC		= \
+		clean_all.c ft_putchar_fd.c ft_putstr_fd.c routine.c \
+		ft_atoi.c ft_putnbr_fd.c init.c monitor.c \
+		main.c
+
+SRCS		= ${addprefix ${PRE}, ${SRC}}
+
+OBJS		= ${SRCS:.c=.o}
+
+PRE		= ./srcs/
+HEAD		= ./includes/
+
+RM		= rm -f
+
 CC		= cc
-CFLAGS		= -Wall -Wextra -Werror -pthread
+CFLAGS		= -Wall -Wextra -Werror
 
-SRCS		= ft_putchar_fd.c ft_putstr_fd.c main.c clean_all.c \
-		ft_putnbr_fd.c ft_atoi.c init.c monitor.c routine.c
+all: ${NAME}
 
-OBJS		= $(SRCS:.c=.o)
+.c.o:
+	${CC} ${CFLAGS} -c -I ${HEAD} $< -o ${<:.c=.o}
 
-INCLUDES	= philosophers.h
+${NAME}: ${OBJS}
+	${CC} ${CFLAGS} ${OBJS} -o ${NAME}
 
-# ========= RULES =============
-all: $(NAME)
-
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-
-%.o: %.c $(INCLUDES)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# ========= CLEANING ==========
 clean:
-	rm -rf $(OBJS)
+	${RM} ${OBJS}
 
 fclean: clean
-	rm -f $(NAME)
+	${RM} ${NAME}
 
 re: fclean all
 
-# ========= BONUS (可选) =======
-debug:
-	$(MAKE) CFLAGS="-g3 -fsanitize=address -Wall -Wextra -Werror" re
-
-# ========= PHONY RULES ========
 .PHONY: all clean fclean re
