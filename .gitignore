@@ -53,3 +53,7 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Project binaries
+philo/philo
+philo_bonus/philo_bonus
