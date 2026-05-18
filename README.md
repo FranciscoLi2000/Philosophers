@@ -1,5 +1,5 @@
 # Philosophers
-A C program that simulates philosophers sharing forks and timing their actions without chaos.
+A C program that simulates the classic dining philosophers scenario (people sharing forks at a table) and times actions safely.
 
 ![Language](https://img.shields.io/badge/language-C-blue.svg)
 ![Norminette](https://img.shields.io/badge/norminette-passing-brightgreen.svg)
@@ -106,7 +106,7 @@ Philosophers/
 **philo_bonus/**
 - `philo_bonus/Makefile` — Builds the bonus process-based version (`philo_bonus`).
 - `philo_bonus/main.c` — Program entry point, process creation, and cleanup.
-- `philo_bonus/init.c` — Argument parsing, process id (pid) allocation, and semaphore setup.
+- `philo_bonus/init.c` — Argument parsing, process ID (PID) allocation, and semaphore setup.
 - `philo_bonus/monitor.c` — Per-process monitor (a watcher thread) that detects death.
 - `philo_bonus/philo_bonus.h` — Shared structs, semaphore names, prototypes.
 - `philo_bonus/routine.c` — The philosopher process routine and actions.
@@ -377,7 +377,7 @@ Philosophers/
 ---
 ##### `start_processes(t_rules *rules)`
 **File:** `philo_bonus/main.c`
-**Purpose:** Fork one process per philosopher and store their pids.
+**Purpose:** Fork one process per philosopher and store their PIDs.
 **Why it exists:** Keeps all forking logic in one function.
 **Parameters:**
 | Parameter | Type | Meaning |
@@ -399,7 +399,7 @@ Philosophers/
 ---
 ##### `cleanup(t_rules *rules)`
 **File:** `philo_bonus/main.c`
-**Purpose:** Close semaphores and free the pid array.
+**Purpose:** Close semaphores and free the PID array.
 **Why it exists:** Avoids leaking OS resources after the run.
 **Parameters:**
 | Parameter | Type | Meaning |
@@ -444,8 +444,8 @@ Philosophers/
 ---
 ##### `allocate_pids(t_rules *rules)`
 **File:** `philo_bonus/init.c`
-**Purpose:** Allocate the pid array for child process tracking.
-**Why it exists:** The parent must know all child pids to stop them.
+**Purpose:** Allocate the PID array for child process tracking.
+**Why it exists:** The parent must know all child PIDs to stop them.
 **Parameters:**
 | Parameter | Type | Meaning |
 |---|---|---|
@@ -465,7 +465,7 @@ Philosophers/
 ---
 ##### `init_rules(t_rules *rules, int argc, char **argv)`
 **File:** `philo_bonus/init.c`
-**Purpose:** Parse arguments, allocate pids, and open semaphores.
+**Purpose:** Parse arguments, allocate PIDs, and open semaphores.
 **Why it exists:** Provides a single initialization entry point for `main()`.
 **Parameters:**
 | Parameter | Type | Meaning |
