@@ -655,7 +655,7 @@ make
 ## Glossary
 | Term | Definition |
 |------|------------|
-| concurrency | Many activities happening at the same time inside one program. |
+| concurrency | Many activities progressing at the same time, within one program or across multiple processes. |
 | thread | A small worker inside a process that shares memory with other threads. |
 | process | A separate program instance with its own memory space. |
 | mutex | A lock that allows only one thread to access a shared resource at a time. |
