@@ -20,14 +20,14 @@
 ** RETURNS: Current time in ms since the Unix epoch.
 ** WHY IT EXISTS: Timing in ms matches the project requirements.
 */
-longget_time_ms(void)
+long	get_time_ms(void)
 {
-struct timevaltv; /* time structure from gettimeofday */
-longms; /* computed milliseconds */
+	struct timeval	tv; /* time structure from gettimeofday */
+	long			ms; /* computed milliseconds */
 
-gettimeofday(&tv, NULL); /* read current wall-clock time */
-ms = tv.tv_sec * 1000L + tv.tv_usec / 1000L; /* sec + usec to ms */
-return (ms); /* return millisecond timestamp */
+	gettimeofday(&tv, NULL); /* read current wall-clock time */
+	ms = tv.tv_sec * 1000L + tv.tv_usec / 1000L; /* sec + usec to ms */
+	return (ms); /* return millisecond timestamp */
 }
 
 /*
@@ -39,14 +39,14 @@ return (ms); /* return millisecond timestamp */
 ** WHY IT EXISTS: Centralizes stop checks under mutex protection.
 ** CONCURRENCY NOTE: Uses state_mutex to protect the stop flag.
 */
-intsimulation_stopped(t_rules *rules)
+int	simulation_stopped(t_rules *rules)
 {
-intstopped; /* local copy of stop flag */
+	int	stopped; /* local copy of stop flag */
 
-pthread_mutex_lock(&rules->state_mutex); /* protect stop flag */
-stopped = rules->stop; /* read stop flag safely */
-pthread_mutex_unlock(&rules->state_mutex); /* release lock */
-return (stopped); /* return the snapshot */
+	pthread_mutex_lock(&rules->state_mutex); /* protect stop flag */
+	stopped = rules->stop; /* read stop flag safely */
+	pthread_mutex_unlock(&rules->state_mutex); /* release lock */
+	return (stopped); /* return the snapshot */
 }
 
 /*
@@ -59,20 +59,20 @@ return (stopped); /* return the snapshot */
 ** WHY IT EXISTS: usleep can oversleep, so we loop in small steps.
 ** CONCURRENCY NOTE: Checks stop flag to exit early if needed.
 */
-intprecise_sleep(t_rules *rules, long duration)
+int	precise_sleep(t_rules *rules, long duration)
 {
-longstart; /* sleep start timestamp */
-longnow; /* current timestamp */
+	long	start; /* sleep start timestamp */
+	long	now; /* current timestamp */
 
-start = get_time_ms(); /* mark the beginning of sleep */
-while (!simulation_stopped(rules)) /* keep sleeping until stop */
-{
-now = get_time_ms(); /* check how much time passed */
-if (now - start >= duration) /* required time elapsed */
-break; /* exit the sleep loop */
-usleep(500); /* sleep 500 microseconds to reduce CPU */
-}
-return (0); /* return after sleeping */
+	start = get_time_ms(); /* mark the beginning of sleep */
+	while (!simulation_stopped(rules)) /* keep sleeping until stop */
+	{
+		now = get_time_ms(); /* check how much time passed */
+		if (now - start >= duration) /* required time elapsed */
+			break; /* exit the sleep loop */
+		usleep(500); /* sleep 500 microseconds to reduce CPU */
+	}
+	return (0); /* return after sleeping */
 }
 
 /*
@@ -84,32 +84,32 @@ return (0); /* return after sleeping */
 ** RETURNS: 0 on success, 1 on invalid input.
 ** WHY IT EXISTS: The project forbids using atoi and similar helpers.
 */
-intparse_positive(const char *str, long *out)
+int	parse_positive(const char *str, long *out)
 {
-longvalue; /* accumulated numeric value */
-inti; /* index into the string */
+	long	value; /* accumulated numeric value */
+	int	i; /* index into the string */
 
-if (!str || !str[0]) /* reject NULL or empty strings */
-return (1); /* invalid input */
-value = 0; /* start accumulation at zero */
-i = 0; /* start from first character */
-if (str[i] == '+') /* allow an optional plus sign */
-i++; /* skip the plus sign */
-if (!str[i]) /* string was only a plus sign */
-return (1); /* invalid input */
-while (str[i]) /* process each character */
-{
-if (str[i] < '0' || str[i] > '9') /* reject non-digits */
-return (1); /* invalid input */
-value = value * 10 + (str[i] - '0'); /* base-10 accumulation */
-if (value > 2147483647L) /* clamp to int range */
-return (1); /* overflow not allowed */
-i++; /* move to next character */
-}
-if (value <= 0) /* must be strictly positive */
-return (1); /* invalid input */
-*out = value; /* store valid result */
-return (0); /* success */
+	if (!str || !str[0]) /* reject NULL or empty strings */
+		return (1); /* invalid input */
+	value = 0; /* start accumulation at zero */
+	i = 0; /* start from first character */
+	if (str[i] == '+') /* allow an optional plus sign */
+		i++; /* skip the plus sign */
+	if (!str[i]) /* string was only a plus sign */
+		return (1); /* invalid input */
+	while (str[i]) /* process each character */
+	{
+		if (str[i] < '0' || str[i] > '9') /* reject non-digits */
+			return (1); /* invalid input */
+		value = value * 10 + (str[i] - '0'); /* base-10 accumulation */
+		if (value > 2147483647L) /* clamp to int range */
+			return (1); /* overflow not allowed */
+		i++; /* move to next character */
+	}
+	if (value <= 0) /* must be strictly positive */
+		return (1); /* invalid input */
+	*out = value; /* store valid result */
+	return (0); /* success */
 }
 
 /*
@@ -124,22 +124,22 @@ return (0); /* success */
 ** CONCURRENCY NOTE: state_mutex prevents printing after stop; write_mutex
 ** is used to avoid interleaved output from multiple threads.
 */
-intprint_state(t_philo *philo, const char *msg, int force)
+int	print_state(t_philo *philo, const char *msg, int force)
 {
-longtimestamp; /* time since simulation start */
-intstopped; /* snapshot of stop flag */
+	long	timestamp; /* time since simulation start */
+	int	stopped; /* snapshot of stop flag */
 
-pthread_mutex_lock(&philo->rules->state_mutex); /* protect stop flag */
-stopped = philo->rules->stop; /* read stop status */
-if (stopped && !force) /* skip normal logs after stop */
-{
-pthread_mutex_unlock(&philo->rules->state_mutex); /* release lock */
-return (1); /* caller can skip further work */
-}
-pthread_mutex_lock(&philo->rules->write_mutex); /* lock output */
-timestamp = get_time_ms() - philo->rules->start_time; /* ms since start */
-printf("%ld %d %s\n", timestamp, philo->id, msg); /* formatted log */
-pthread_mutex_unlock(&philo->rules->write_mutex); /* release output */
-pthread_mutex_unlock(&philo->rules->state_mutex); /* release stop lock */
-return (0); /* message printed */
+	pthread_mutex_lock(&philo->rules->state_mutex); /* protect stop flag */
+	stopped = philo->rules->stop; /* read stop status */
+	if (stopped && !force) /* skip normal logs after stop */
+	{
+		pthread_mutex_unlock(&philo->rules->state_mutex); /* release lock */
+		return (1); /* caller can skip further work */
+	}
+	pthread_mutex_lock(&philo->rules->write_mutex); /* lock output */
+	timestamp = get_time_ms() - philo->rules->start_time; /* ms since start */
+	printf("%ld %d %s\n", timestamp, philo->id, msg); /* formatted log */
+	pthread_mutex_unlock(&philo->rules->write_mutex); /* release output */
+	pthread_mutex_unlock(&philo->rules->state_mutex); /* release stop lock */
+	return (0); /* message printed */
 }

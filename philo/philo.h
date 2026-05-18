@@ -14,7 +14,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef struct s_philot_philo;
+typedef struct s_philo		t_philo;
 
 /*
 ** STRUCT: s_rules
@@ -23,17 +23,17 @@ typedef struct s_philot_philo;
 */
 typedef struct s_rules
 {
-intphilo_count;
-longtime_die;
-longtime_eat;
-longtime_sleep;
-intmust_eat;
-longstart_time;
-intstop;
-pthread_mutex_tstate_mutex;
-pthread_mutex_twrite_mutex;
-pthread_mutex_t*forks;
-t_philo*philos;
+	int				philo_count;
+	long			time_die;
+	long			time_eat;
+	long			time_sleep;
+	int				must_eat;
+	long			start_time;
+	int				stop;
+	pthread_mutex_t	state_mutex;
+	pthread_mutex_t	write_mutex;
+	pthread_mutex_t	*forks;
+	t_philo			*philos;
 }t_rules;
 
 /*
@@ -43,23 +43,23 @@ t_philo*philos;
 */
 typedef struct s_philo
 {
-intid;
-pthread_tthread;
-pthread_mutex_tmeal_mutex;
-longlast_meal;
-intmeals_eaten;
-pthread_mutex_t*left_fork;
-pthread_mutex_t*right_fork;
-t_rules*rules;
+	int				id;
+	pthread_t		thread;
+	pthread_mutex_t	meal_mutex;
+	long			last_meal;
+	int				meals_eaten;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+	t_rules			*rules;
 }t_philo;
 
-intinit_rules(t_rules *rules, int argc, char **argv);
-void*philo_routine(void *arg);
-intmonitor_simulation(t_rules *rules);
-longget_time_ms(void);
-intprecise_sleep(t_rules *rules, long duration);
-intparse_positive(const char *str, long *out);
-intsimulation_stopped(t_rules *rules);
-intprint_state(t_philo *philo, const char *msg, int force);
+int		init_rules(t_rules *rules, int argc, char **argv);
+void	*philo_routine(void *arg);
+int		monitor_simulation(t_rules *rules);
+long	get_time_ms(void);
+int		precise_sleep(t_rules *rules, long duration);
+int		parse_positive(const char *str, long *out);
+int		simulation_stopped(t_rules *rules);
+int		print_state(t_philo *philo, const char *msg, int force);
 
 #endif
