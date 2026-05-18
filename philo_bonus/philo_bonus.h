@@ -29,7 +29,7 @@ typedef struct s_rules
 	sem_t	*forks;
 	sem_t	*write;
 	pid_t	*pids;
-}t_rules;
+} t_rules;
 
 typedef struct s_philo
 {
@@ -39,7 +39,7 @@ typedef struct s_philo
 	pthread_mutex_t	meal_mutex;
 	pthread_t		monitor;
 	t_rules			*rules;
-}t_philo;
+} t_philo;
 
 int		init_rules(t_rules *rules, int argc, char **argv);
 void	run_philo(t_rules *rules, int id);

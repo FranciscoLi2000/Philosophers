@@ -23,10 +23,10 @@
 ** WHY IT EXISTS: Keeps fork logic centralized and easy to manage.
 ** CONCURRENCY NOTE: Each child process runs independently after fork.
 */
-static int    start_processes(t_rules *rules)
+static int	start_processes(t_rules *rules)
 {
-	int     i; /* loop index for philosophers */
-	pid_t   pid; /* process id from fork */
+	int		i; /* loop index for philosophers */
+	pid_t	pid; /* process id from fork */
 
 	rules->start_time = get_time_ms(); /* shared reference time */
 	i = 0; /* start from first philosopher */
@@ -52,12 +52,12 @@ static int    start_processes(t_rules *rules)
 ** WHY IT EXISTS: Parent must reap child processes to avoid zombies.
 ** CONCURRENCY NOTE: waitpid blocks until a child changes state.
 */
-static void    wait_processes(t_rules *rules)
+static void	wait_processes(t_rules *rules)
 {
-	int     status; /* status returned by waitpid */
-	int     finished; /* count of normal exits */
-	int     i; /* loop index for termination */
-	pid_t   pid; /* pid from waitpid */
+	int		status; /* status returned by waitpid */
+	int		finished; /* count of normal exits */
+	int		i; /* loop index for termination */
+	pid_t	pid; /* pid from waitpid */
 
 	finished = 0; /* no child has finished yet */
 	while (finished < rules->philo_count) /* keep waiting for children */
@@ -89,7 +89,7 @@ static void    wait_processes(t_rules *rules)
 ** RETURNS: Nothing (void)
 ** WHY IT EXISTS: Ensures no leaked resources after the run.
 */
-static void    cleanup(t_rules *rules)
+static void	cleanup(t_rules *rules)
 {
 	close_sems(rules); /* close and unlink named semaphores */
 	free(rules->pids); /* free pid array memory */
@@ -104,9 +104,9 @@ static void    cleanup(t_rules *rules)
 ** RETURNS: 0 on success, 1 on error.
 ** WHY IT EXISTS: This is the entry point for the bonus program.
 */
-int    main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_rules rules; /* shared configuration for the parent */
+	t_rules	rules; /* shared configuration for the parent */
 
 	memset(&rules, 0, sizeof(t_rules)); /* clear struct for safety */
 	if (init_rules(&rules, argc, argv)) /* parse and init resources */

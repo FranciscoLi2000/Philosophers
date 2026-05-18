@@ -34,7 +34,7 @@ typedef struct s_rules
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;
-}t_rules;
+} t_rules;
 
 /*
 ** STRUCT: s_philo
@@ -51,7 +51,7 @@ typedef struct s_philo
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	t_rules			*rules;
-}t_philo;
+} t_philo;
 
 int		init_rules(t_rules *rules, int argc, char **argv);
 void	*philo_routine(void *arg);
