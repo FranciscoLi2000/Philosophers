@@ -18,7 +18,7 @@ A C program that simulates the classic dining philosophers scenario (people shar
 - [Author](#author)
 
 ## The Problem — Explained for a Human
-Imagine a round table with philosophers. Each philosopher needs two forks to eat, but there is only one fork between each pair. They repeat the same routine: think, take forks, eat, sleep, and think again. If a philosopher goes too long without eating, they “die,” and the simulation stops.
+Imagine a round table with philosophers. Each philosopher needs two forks to eat, but there is only one fork between each pair. They repeat the same routine: take forks, eat, sleep, and think. If a philosopher goes too long without eating, they “die,” and the simulation stops.
 
 This story models a real computing challenge: many activities happen at the same time and must share limited resources. That situation is called **concurrency**, and it is common in servers, games, and operating systems. The hard part is making sure everyone shares fairly and safely. If everyone grabs one fork and waits forever, we get a **deadlock** (a total standstill). If one philosopher is always unlucky and never eats, we get **starvation** (someone is blocked forever). And if two actions change the same data at the same time, we get a **data race** (unpredictable results).
 
@@ -628,7 +628,7 @@ make
 ./philo 5 800 200 200     # Expected: no one dies, runs indefinitely
 ./philo 4 410 200 200     # Expected: runs without deaths
 ./philo 4 310 200 100     # Expected: a philosopher may die
-./philo 5 800 200 200 7   # Expected: stops after each philosopher eats 7 times
+./philo 5 800 200 200 7   # Expected: stops after all philosophers have each eaten 7 times
 ```
 
 ## Common Mistakes and How to Avoid Them
