@@ -86,7 +86,8 @@ void	run_philo(t_rules *rules, int id)
 	philo.meals_eaten = 0; /* no meals yet */
 	philo.last_meal = get_time_ms(); /* initial meal time */
 	pthread_mutex_init(&philo.meal_mutex, NULL); /* protect meal data */
-	pthread_create(&philo.monitor, NULL, death_monitor, &philo);
+	if (pthread_create(&philo.monitor, NULL, death_monitor, &philo) != 0)
+		exit(1); /* stop if we cannot start the monitor thread */
 	pthread_detach(philo.monitor); /* monitor exits with the process */
 	if (rules->philo_count == 1) /* single philosopher edge case */
 	{
